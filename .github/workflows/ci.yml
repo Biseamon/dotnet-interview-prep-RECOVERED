@@ -1,0 +1,56 @@
+# CI: builds the solution, builds the frontend, and runs the full test suite
+# (grader units + API integration + content integrity) against a real Postgres.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+
+    # Postgres service matching docker-compose.yml credentials, so the API's
+    # Development connection string (localhost:5432) works unchanged in CI.
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: dojo
+          POSTGRES_PASSWORD: dojo_dev_pw
+          POSTGRES_DB: dojo
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U dojo -d dojo"
+          --health-interval 3s
+          --health-timeout 3s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore & build
+        run: dotnet build DotNetDojo.sln --configuration Release
+
+      - name: Test (units + integration + content integrity)
+        run: dotnet test DotNetDojo.sln --configuration Release --no-build
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: client
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - run: npm ci
+      - run: npm run build

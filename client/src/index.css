@@ -1,0 +1,132 @@
+/* ===========================================================================
+   DotNetDojo design system — Duolingo-style handoff.
+   The CSS custom properties below are the pixel-perfect source of truth (copied
+   verbatim from the design .dc.html files). Screens are authored with these vars +
+   the .card / .btn-3d / .path-node recipe classes. Tailwind is still imported and a
+   small @theme mapping keeps legacy semantic utility classes (bg-surface, text-muted…)
+   resolving onto the new tokens for the few components that still use them.
+   =========================================================================== */
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap");
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---- Design tokens (verbatim from the handoff) ---- */
+:root {
+  --bg:#ffffff; --bg-page:#f6f3ee; --card:#ffffff; --surface:#fdfcfa; --border:#e7e3ee;
+  --text:#34303c; --muted:#8b8794; --faint:#c9c4d1; --track:#f4f1fa; --ring:#d7d1e2;
+  --purple-deep:#5a4bab; --chip-purple:#ece8fb;
+  --nav-bg:#e9f3fd; --nav-bd:#b3d4f5; --nav-tx:#2d70b3;
+  --chip-green:#e4f4ea; --chip-green-tx:#3c8a54;
+  --chip-gold:#faf1d6; --chip-gold-tx:#a4761a; --chip-gold-bd:#ecd9a0;
+  --chip-pink:#fbe6ec; --chip-pink-tx:#b3506b; --chip-blue:#e4eff7;
+  --locked:#e9e5f0; --locked-sh:#cfc9dc; --locked-tx:#c2bccf; --pass-bd:#a9dcb6;
+  --code-bg:#fffffe; --code-kw:#0000ff; --code-type:#267f99; --code-fn:#795e26;
+  --code-cm:#008000; --code-num:#098658; --code-ctrl:#af00db;
+
+  /* Fixed brand colors (identical in both themes) */
+  --green:#58bd6d; --green-sh:#46a058;
+  --purple:#7c5ce0; --purple-sh:#5f45c4; --purple-lt:#8b7ae0; --purple-lt-sh:#6f5fc4;
+  --gold:#f2b13d; --gold-sh:#cf902a; --xp:#d99a1f;
+  --blue:#4da3ff; --blue-sh:#3a82cf; --streak:#f28c3d; --heart:#e06a7c;
+}
+html.dark {
+  --bg:#191622; --bg-page:#191622; --card:#241f30; --surface:#1f1a2b; --border:#362f47;
+  --text:#ece9f3; --muted:#a39fb2; --faint:#6f6a80; --track:#2c2740; --ring:#4a4460;
+  --purple-deep:#b8b0e8; --chip-purple:#2f2a45;
+  --nav-bg:#1f2c36; --nav-bd:#2d70b3; --nav-tx:#94bcd8;
+  --chip-green:#22322a; --chip-green-tx:#8fc7a6;
+  --chip-gold:#37301c; --chip-gold-tx:#e6c05e; --chip-gold-bd:#4a3f22;
+  --chip-pink:#3a2530; --chip-pink-tx:#e58ba0; --chip-blue:#1f2c36;
+  --locked:#2c2740; --locked-sh:#14111c; --locked-tx:#575170; --pass-bd:#3f6b4c;
+  --code-bg:#1c1826; --code-kw:#7ba9f7; --code-type:#4ec9b0; --code-fn:#dcdcaa;
+  --code-cm:#6a9955; --code-num:#b5cea8; --code-ctrl:#c586c0;
+}
+
+/* Legacy Tailwind semantic utilities → new tokens (for components not yet migrated). */
+@theme inline {
+  --color-bg:            var(--bg-page);
+  --color-surface:       var(--card);
+  --color-surface-2:     var(--track);
+  --color-ink:           var(--text);
+  --color-muted:         var(--muted);
+  --color-border:        var(--border);
+  --color-border-strong: var(--ring);
+  --color-accent:        var(--purple-lt);
+  --color-accent-ink:    #ffffff;
+  --color-accent-soft:   var(--chip-purple);
+  --color-success:       var(--green);
+  --color-error:         var(--heart);
+  --color-warning:       var(--gold);
+  --color-info:          var(--blue);
+  --font-sans: "Nunito", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-display: "Nunito", ui-sans-serif, system-ui, sans-serif;
+}
+
+html { color-scheme: light dark; }
+body {
+  margin:0; min-height:100vh; background:var(--bg-page); color:var(--text);
+  font-family:"Nunito", system-ui, sans-serif; font-weight:600; -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3 { font-weight:900; }
+
+/* ---- The chunky 3D recipe ---- */
+.card {
+  background:var(--card); border:2px solid var(--border); border-radius:20px;
+  box-shadow:0 4px 0 var(--border);
+}
+.btn-3d {
+  --face:var(--green); --edge:var(--green-sh); --ink:#fff;
+  display:inline-flex; align-items:center; justify-content:center; gap:8px;
+  background:var(--face); color:var(--ink); border:none; border-radius:15px;
+  font-family:inherit; font-weight:900; font-size:14px; letter-spacing:0.04em;
+  padding:12px 22px; cursor:pointer; box-shadow:0 4px 0 var(--edge);
+  transition:transform .06s ease, box-shadow .06s ease, filter .15s ease; user-select:none;
+}
+.btn-3d:hover:not(:disabled) { filter:brightness(1.04); }
+.btn-3d:active:not(:disabled) { transform:translateY(3px); box-shadow:0 1px 0 var(--edge); }
+.btn-3d:disabled { opacity:.55; cursor:default; }
+.btn-green  { --face:var(--green);   --edge:var(--green-sh);  --ink:#fff; }
+.btn-purple { --face:var(--purple);  --edge:var(--purple-sh); --ink:#fff; }
+.btn-blue   { --face:var(--blue);    --edge:var(--blue-sh);   --ink:#fff; }
+.btn-ghost  { --face:var(--card);    --edge:var(--border);    --ink:var(--muted); border:2px solid var(--border); }
+.btn-ghost:hover:not(:disabled) { color:var(--text); filter:none; }
+
+.path-node {
+  width:74px; height:74px; border-radius:999px; display:grid; place-items:center;
+  font-size:30px; color:#fff; cursor:pointer; box-shadow:0 7px 0 var(--nd-sh, var(--green-sh));
+  transition:transform .06s ease, box-shadow .06s ease;
+}
+.path-node:active { transform:translateY(5px); box-shadow:0 2px 0 var(--nd-sh, var(--green-sh)); }
+
+@keyframes pulse-ring { 0% { transform:scale(1); opacity:.6; } 100% { transform:scale(1.35); opacity:0; } }
+@keyframes spin { to { transform:rotate(360deg); } }
+@keyframes pop-in { 0% { transform:scale(.7); opacity:0; } 70% { transform:scale(1.06); } 100% { transform:scale(1); opacity:1; } }
+@keyframes confetti-fall { 0% { transform:translateY(-10vh) rotate(0); opacity:1; } 100% { transform:translateY(100vh) rotate(720deg); opacity:0; } }
+/* Indeterminate progress bar for long local-AI calls (parse / analyze). */
+@keyframes indeterminate { 0% { left:-45%; } 100% { left:100%; } }
+.animate-pop { animation:pop-in .35s cubic-bezier(.18,.89,.32,1.28) both; }
+@media (prefers-reduced-motion: reduce) { .animate-pop, [style*="pulse-ring"] { animation:none !important; } }
+
+/* Theme-swap helpers used by inline toggle icons in the prototypes. */
+.tl{display:inline}.td{display:none}html.dark .tl{display:none}html.dark .td{display:inline}
+
+/* ---- Rendered markdown (lessons / prompts) ---- */
+.prose-dojo { line-height:1.7; font-weight:600; }
+.prose-dojo h2 { font-size:1.15rem; font-weight:900; margin:1.1rem 0 .5rem; }
+.prose-dojo h3 { font-size:1rem; font-weight:800; margin:.9rem 0 .4rem; }
+.prose-dojo p { margin:.5rem 0; }
+.prose-dojo ul { margin:.5rem 0; padding-left:1.2rem; list-style:disc; }
+.prose-dojo ol { margin:.5rem 0; padding-left:1.2rem; list-style:decimal; }
+.prose-dojo li { margin:.2rem 0; }
+.prose-dojo code { background:var(--track); padding:.1rem .35rem; border-radius:6px; font-size:.85em; font-family:ui-monospace,"SF Mono",Menlo,monospace; font-weight:400; }
+.prose-dojo pre { background:var(--track); padding:.75rem; border-radius:10px; overflow-x:auto; }
+.prose-dojo pre code { background:none; padding:0; }
+.prose-dojo strong { font-weight:900; }
+.prose-dojo table { border-collapse:collapse; margin:.6rem 0; font-size:.9em; }
+.prose-dojo th, .prose-dojo td { border:1px solid var(--border); padding:.3rem .6rem; text-align:left; }
+.prose-dojo blockquote { border-left:3px solid var(--purple-lt); padding-left:.8rem; color:var(--muted); margin:.6rem 0; }
+
+::-webkit-scrollbar { width:10px; height:10px; }
+::-webkit-scrollbar-thumb { background:var(--ring); border-radius:999px; }
+::-webkit-scrollbar-track { background:transparent; }

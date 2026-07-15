@@ -1,0 +1,23 @@
+# Local Postgres for DotNetDojo. Run:  docker compose up -d
+# The API connects using the connection string in appsettings.Development.json.
+# Data persists in the named volume 'dojo_pgdata' across container restarts.
+services:
+  db:
+    image: postgres:17            # pinned major version for reproducibility
+    container_name: dojo_postgres
+    environment:
+      POSTGRES_USER: dojo
+      POSTGRES_PASSWORD: dojo_dev_pw   # dev-only credential; never used in prod
+      POSTGRES_DB: dojo
+    ports:
+      - "5432:5432"               # expose to host so EF/psql can connect on localhost
+    volumes:
+      - dojo_pgdata:/var/lib/postgresql/data
+    healthcheck:                  # lets `docker compose up --wait` block until ready
+      test: ["CMD-SHELL", "pg_isready -U dojo -d dojo"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  dojo_pgdata:
